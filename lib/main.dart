@@ -1,8 +1,20 @@
+import 'package:cashir_app/viewmodels/usesr-view-model.dart';
 import 'package:cashir_app/views/onboarding.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'helper/locator.dart';
 
 void main() {
-  runApp(const MyApp());
+  setUpLocator();
+  runApp(
+      MultiProvider(
+          child: const MyApp(),
+          providers: [
+            ChangeNotifierProvider(create: (context) => UserViewModel()),
+          ]
+      )
+  );
 }
 
 class MyApp extends StatelessWidget {

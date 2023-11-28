@@ -7,6 +7,7 @@ import 'package:cashir_app/views/common/height-spacer.dart';
 import 'package:cashir_app/views/sign-up.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:onboarding/onboarding.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -51,6 +52,8 @@ class _OnboardState extends State<Onboard> {
           children: [
             Spacer(),
             HeightSpacer(0.02),
+            Icon(Icons.accessibility_new_rounded, size: 100, color: appPrimaryColor,),
+            HeightSpacer(0.05),
             Text(
               "Onboarding 1",
               style: headerText2Style,
@@ -76,6 +79,8 @@ class _OnboardState extends State<Onboard> {
           children: [
             Spacer(),
             HeightSpacer(0.02),
+            Icon(Icons.adb_sharp, size: 100, color: appPrimaryColor,),
+            HeightSpacer(0.05),
             Text(
               "Onboarding 2",
               style: headerText2Style,

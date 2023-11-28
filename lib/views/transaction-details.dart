@@ -1,3 +1,4 @@
+import 'package:cashir_app/model/data/transaction-history.model.dart';
 import 'package:cashir_app/theme/color.dart';
 import 'package:cashir_app/theme/text-styles.dart';
 import 'package:cashir_app/views/common/height-spacer.dart';
@@ -5,6 +6,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TransactionsDetails extends StatelessWidget{
+
+  final TransactionHistoryModel transactionHistoryModel;
+  const TransactionsDetails({super.key, required this.transactionHistoryModel});
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -53,7 +58,7 @@ class TransactionsDetails extends StatelessWidget{
                                   )
                               ),
                               Text(
-                                  "1"
+                                  transactionHistoryModel.id.toString()
                               )
                             ],
                           ),
@@ -69,7 +74,7 @@ class TransactionsDetails extends StatelessWidget{
                                   )
                               ),
                               Text(
-                                  "shopping"
+                                  transactionHistoryModel.desc
                               )
                             ],
                           ),
@@ -85,7 +90,7 @@ class TransactionsDetails extends StatelessWidget{
                                   )
                               ),
                               Text(
-                                  "debit"
+                                  transactionHistoryModel.type
                               )
                             ],
                           ),
@@ -101,7 +106,7 @@ class TransactionsDetails extends StatelessWidget{
                                   )
                               ),
                               Text(
-                                  "₦2,000"
+                                  "₦${transactionHistoryModel.amount}"
                               )
                             ],
                           ),
@@ -117,7 +122,7 @@ class TransactionsDetails extends StatelessWidget{
                                   )
                               ),
                               Text(
-                                  "23-07-2023"
+                                  transactionHistoryModel.date
                               )
                             ],
                           ),
