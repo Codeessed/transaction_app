@@ -2,7 +2,7 @@
 class TransactionHistoryModel {
   int id;
   String date;
-  String amount;
+  int amount;
   String type;
   String desc;
 

@@ -22,7 +22,7 @@ class UserDetailsModel {
       'last_name': lastName,
       'account_balance': accountBal,
       'virtual_acct_no': accNo,
-      'transaction': transactions,
+      'transactions': (transactions as List).map((e) => e.toJson()).toList(),
     };
   }
 
@@ -32,7 +32,7 @@ class UserDetailsModel {
       lastName: json['last_name'],
       accountBal: json['account_balance'],
       accNo: json['virtual_acct_no'],
-      transactions: (json['transaction'] as List).map((e) => TransactionHistoryModel.fromJson(e)).toList(),
+      transactions: (json['transactions'] as List).map((e) => TransactionHistoryModel.fromJson(e)).toList(),
     );
   }
 

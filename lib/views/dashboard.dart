@@ -2,11 +2,14 @@ import 'package:cashir_app/model/data/transaction-history.model.dart';
 import 'package:cashir_app/theme/color.dart';
 import 'package:cashir_app/theme/sizes.dart';
 import 'package:cashir_app/theme/text-styles.dart';
+import 'package:cashir_app/viewmodels/usesr-view-model.dart';
+import 'package:cashir_app/views/common/app-button.dart';
 import 'package:cashir_app/views/common/height-spacer.dart';
 import 'package:cashir_app/views/transaction-details.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 import 'common/width-spacer.dart';
 
@@ -25,6 +28,8 @@ class DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
+
+    UserViewModel userViewModel = context.watch<UserViewModel>();
 
     // if(customFilter == null){
     //
@@ -58,20 +63,31 @@ class DashboardState extends State<Dashboard> {
         child: Scaffold(
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
+            child: userViewModel.details == null ?
+                Center(
+                  child: CircularProgressIndicator(),
+                )
+            : userViewModel.details?.data != null ? Column(
               children: [
                 HeightSpacer(0.03),
                 Row(
                   children: [
                     Container(
                       padding: EdgeInsets.all(10),
-                      child: Text(
-                        'GM',
-                        style: bodyText2Style.copyWith(color: Colors.black, fontWeight: FontWeight.w500),
+                      child: Visibility(
+                        visible: userViewModel.details != null,
+                        maintainSize: true,
+                        maintainAnimation: true,
+                        maintainState: true,
+                        child: Text(
+                          '${userViewModel.details?.data?.firstName[0].toUpperCase() ?? 'L'}${userViewModel.details?.data?.lastName[0].toUpperCase() ?? 'S'}',
+                          // 'GM',
+                          style: bodyText2Style.copyWith(color: Colors.black, fontWeight: FontWeight.w500),
+                        ),
                       ),
                       decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.grey
+                          shape: BoxShape.circle,
+                          color: Colors.grey
                       ),
                     ),
                     Expanded(
@@ -81,7 +97,7 @@ class DashboardState extends State<Dashboard> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Welcome, John',
+                                'Welcome, ${userViewModel.details!.data!.firstName}',
                                 style: bodyText2Style.copyWith(fontWeight: FontWeight.w500, fontSize: ts4, color: Colors.black),
                               ),
                               Text(
@@ -116,7 +132,7 @@ class DashboardState extends State<Dashboard> {
                                   ),
                                   HeightSpacer(0.005),
                                   Text(
-                                    hideStatus ? '******' : '₦2,000,000.00',
+                                    hideStatus ? '******' : '₦${userViewModel.details!.data!.accountBal}',
                                     style: bodyText2Style.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
                                   )
                                 ],
@@ -160,7 +176,7 @@ class DashboardState extends State<Dashboard> {
                                   style: bodyText2Style.copyWith(color: Colors.white)
                               ),
                               TextSpan(
-                                text: '0000000000',
+                                text: userViewModel.details!.data!.accNo,
                                 style: bodyText2Style.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
 
                               ),
@@ -182,9 +198,9 @@ class DashboardState extends State<Dashboard> {
 
                     ),
                     GestureDetector(
-                      onTap: (){
+                        onTap: (){
 
-                      },
+                        },
                         child: Icon(Icons.filter_alt_outlined, color: appPrimaryColor, size: ts1,)
                     )
                   ],
@@ -192,8 +208,9 @@ class DashboardState extends State<Dashboard> {
                 HeightSpacer(0.01),
                 Expanded(
                     child: ListView.builder(
-                      itemCount: 5,
+                        itemCount: 5,
                         itemBuilder:(context, index){
+                          var transaction = userViewModel.details!.data!.transactions[index];
                           return Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             child: InkWell(
@@ -201,7 +218,7 @@ class DashboardState extends State<Dashboard> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => TransactionsDetails(),
+                                    builder: (context) => TransactionsDetails(transactionHistoryModel: transaction,),
                                   ),
                                 );
                               },
@@ -211,11 +228,11 @@ class DashboardState extends State<Dashboard> {
                                     padding: EdgeInsets.all(10),
                                     decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        color: true ? Colors.grey.withOpacity(0.1) : Colors.red.withOpacity(0.1)
+                                        color: transaction.type == "debit" ? Colors.grey.withOpacity(0.1) : Colors.red.withOpacity(0.1)
                                     ),
                                     child: SvgPicture.asset(
-                                      true ? 'assets/icons/arrow-in.svg' : 'assets/icons/arrow-out.svg',
-                                      color: true ? appPrimaryColor : Colors.red,
+                                      transaction.type == "debit" ? 'assets/icons/arrow-in.svg' : 'assets/icons/arrow-out.svg',
+                                      color: transaction.type == "debit" ? appPrimaryColor : Colors.red,
                                     ),
                                   ),
                                   Expanded(
@@ -226,12 +243,12 @@ class DashboardState extends State<Dashboard> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              'Shopping',
+                                              transaction.desc,
                                               style: bodyText2Style.copyWith(color: Colors.black),
                                             ),
                                             HeightSpacer(0.01),
                                             Text(
-                                              '28-07-2023',
+                                              transaction.date,
                                               style: bodyText2Style.copyWith(color: Colors.black),
                                             )
                                           ],
@@ -239,7 +256,7 @@ class DashboardState extends State<Dashboard> {
                                       )
                                   ),
                                   Text(
-                                    '₦4,500',
+                                    '₦${transaction.amount}',
                                     style: bodyText2Style.copyWith(color: Colors.black, fontWeight: FontWeight.w500),
                                   )
                                 ],
@@ -250,9 +267,25 @@ class DashboardState extends State<Dashboard> {
                     )
                 )
               ],
+            ) : Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                      onPressed: (){
+                        userViewModel.getDetailsFromServer();
+                      },
+                      child: Text(
+                        'Retry'
+                      )
+                  ),
+                  Text(
+                    userViewModel.details?.error?.message ?? '',
+                    textAlign: TextAlign.center,
+                  )
+                ],
+              ),
             ),
-          ),
-        )
-    );
+          )));
   }
 }
